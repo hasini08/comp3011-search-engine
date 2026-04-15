@@ -75,6 +75,13 @@ class Crawler:
     # Private helpers
     # ------------------------------------------------------------------
 
+    def _normalise_url(self, url: str) -> str:
+        """Strip trailing slash from a URL path for consistent deduplication."""
+        parsed = urlparse(url)
+        # Remove trailing slash only when the path is more than just "/"
+        path = parsed.path.rstrip("/") or "/"
+        return parsed._replace(path=path).geturl()
+
     def _crawl_page(self, url: str) -> None:
         """
         Fetch a single page, store its text, and recurse into its links.
@@ -82,6 +89,7 @@ class Crawler:
         Args:
             url: Absolute URL of the page to fetch.
         """
+        url = self._normalise_url(url)
         if url in self.visited:
             return
 
@@ -182,7 +190,7 @@ class Crawler:
                 continue
 
             # Strip fragment to avoid treating /page#section as new URL
-            clean_url = parsed._replace(fragment="").geturl()
+            clean_url = self._normalise_url(parsed._replace(fragment="").geturl())
 
             if clean_url not in self.visited and clean_url not in seen_in_batch:
                 seen_in_batch.add(clean_url)

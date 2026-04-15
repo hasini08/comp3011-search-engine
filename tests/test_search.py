@@ -249,16 +249,17 @@ class TestFind:
 
     def test_results_are_ranked(self, capsys):
         """Pages with higher TF-IDF should appear earlier in results."""
-        # Build a corpus where "rare" appears once in p1 (rare=high idf)
-        # and "rare" appears many times in p2 (high tf)
+        # Three pages: dense has highest TF for "rare", other two have lower TF.
+        # A third page with no "rare" ensures IDF > 0 so scores differ.
         pages = {
-            "https://example.com/common": "rare word appears here once",
             "https://example.com/dense": "rare rare rare rare rare word appears many times",
+            "https://example.com/common": "rare word appears here once",
+            "https://example.com/other": "nothing relevant here at all",
         }
         engine = make_engine(pages)
         engine.find("rare")
         out = capsys.readouterr().out
-        # The dense page should be ranked first (higher TF-IDF)
+        # The dense page has highest TF-IDF and should appear first
         pos_dense = out.find("dense")
         pos_common = out.find("common")
         assert pos_dense < pos_common
