@@ -32,7 +32,7 @@ Results from `find` are ranked by **TF-IDF** (Term Frequency × Inverse Document
 git clone <your-repo-url>
 cd <repo-name>
 
-# 2. (Recommended) Create a virtual environment
+# 2. Create a virtual environment
 python -m venv venv
 source venv/bin/activate        # macOS / Linux
 venv\Scripts\activate           # Windows
@@ -170,13 +170,14 @@ pytest tests/ -v --cov=src --cov-report=term-missing
 
 ### Test file overview
 
-| File | What it tests |
-|---|---|
-| `tests/test_crawler.py` | Initialisation, text/link extraction, crawl behaviour, error handling |
-| `tests/test_indexer.py` | Tokenisation, index building, persistence, TF-IDF scoring |
-| `tests/test_search.py` | `print_index`, `find` (single/multi-word, AND logic, ranking, edge cases) |
+| File | Tests | What it covers |
+|---|---|---|
+| `tests/test_crawler.py` | 29 | Initialisation, text/link extraction, crawl behaviour, error handling |
+| `tests/test_indexer.py` | 33 | Tokenisation, index building, persistence, TF-IDF scoring |
+| `tests/test_search.py` | 34 | `print_index`, `find` (single/multi-word, AND logic, ranking, edge cases) |
+| `tests/test_main.py` | 22 | CLI commands, REPL loop, error handling, help output |
 
-All crawler tests use `unittest.mock` to mock HTTP requests — no live network access is needed.
+All crawler and build tests use `unittest.mock` to mock HTTP requests — no live network access is needed.
 
 ---
 
@@ -192,7 +193,8 @@ All crawler tests use `unittest.mock` to mock HTTP requests — no live network 
 ├── tests/
 │   ├── test_crawler.py
 │   ├── test_indexer.py
-│   └── test_search.py
+│   ├── test_search.py
+│   └── test_main.py
 ├── data/
 │   └── index.json        # Generated after running `build`
 ├── requirements.txt
